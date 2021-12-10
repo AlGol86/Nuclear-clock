@@ -1,19 +1,15 @@
 #include "iostm8s103f3.h"
+#define MENU_SIZE 8
 
-#define CONST_eeprom_pointer ((char*)0x4010)
+typedef enum {time, set_hr, set_min, set_day, set_month, set_year, set_corr_sec, set_corr_millis, set_bell} menu_t;
 
-#pragma vector = 3
-__interrupt void awu(void);
+typedef struct {
+	char epochSecFirstPoint[4];
+        char timeCorrSec;
+        char timeCorrDecaMs;
+        char positiveCorr;
+} eeprom_data_t;
 
-#pragma vector = 13
-__interrupt void time1(void);
-
-#pragma vector = 16
-__interrupt void time2cc(void);
-
-#pragma vector = 15
-__interrupt void time2(void);
-
-typedef enum {time, set_hr, set_min, set_day, set_month, set_year, set_correction, set_bell} menu_t;
-
-void init_AWU(void);
+void menu_partition(menu_t menu);
+void populate_timeAlignment_from_eeprom();
+void save_timeAlignment_to_eeprom();

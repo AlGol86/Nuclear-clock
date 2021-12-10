@@ -4,7 +4,7 @@
 #define EMPTY 255;
 
 typedef struct {
-  int value[DIG_BUF_SIZE];
+  signed char value[DIG_BUF_SIZE];
   char position[DIG_BUF_SIZE];
 } OledDigitBuffer; 
 
@@ -22,5 +22,4 @@ void send_single_data(char data_byte);
 
 void oled_print_giga_digit(char d,char x);   //12*20
 char oled_print_giga_char(char c,char x); //12*20
-void oled_print_XXnumber(char n,char pos);
-void oled_print_XXXnumber(int n, char pos);
+void oled_print_XXnumber(int n,char pos);

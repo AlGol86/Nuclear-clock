@@ -33,7 +33,6 @@ void init_encoder(encoder_t* enc){
 	PORT_ENCODER_L_DDR&=~(bit_enc_l|bit_enc_r|bit_enc_b);
 	PORT_ENCODER_L_CR1|=(bit_enc_l|bit_enc_r|bit_enc_b);
         enc->but_data_lim=1;
-        enc->but_data_lim_long=1;
 }
 
 char check_encoder_button(encoder_t* enc){
@@ -65,16 +64,8 @@ void encoder_handler(encoder_t* enc){
 			else if(((PORT_ENCODER_R_B_IDR&bit_enc_r)!=0)&&(enc->enc_data > enc->enc_data_lim_l)) enc->enc_data--;
 	    }
    if ((enc->cnt==0)&&(enc->cnt_button==0))	
-	       {enc->f_push=0;enc->f_long_push=0;}
+	       {enc->f_push=0;}
 
-//button long
-  if ((enc->cnt_button >(cnt_button_lim-2))&&(enc->f_long_push==0)){
-		enc->f_long_push=1;
-		if (enc->but_data_long < enc->but_data_lim_long) enc->but_data_long++;
-		else enc->but_data_long=0;
-
-		enc->but_data=0;
-	}
 
 //button short	
 	if ((enc->cnt_button >(cnt_lim-2))&&(enc->f_push==0)) {

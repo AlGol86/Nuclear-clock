@@ -28,16 +28,13 @@ typedef struct {
 	char cnt;
 	int cnt_button;
 	char f_push :1;
-	char f_long_push :1;
 	
 	int first_enc_data;
 	int enc_data;
 	int enc_data_lim_h;
 	int enc_data_lim_l;
 	char but_data;
-        char but_data_long;
 	char but_data_lim;
-	char but_data_lim_long;
 } encoder_t;
 
 //encoder

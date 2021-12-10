@@ -1,23 +1,26 @@
 #include "iostm8s103f3.h"
-#include "iic.h"
+//#include "iic.h"
 #include "oled.h"
+#include "iic_embedded_tx.h"
 
+void sendCmd(char cmd) {
 
-void sendCmd(char cmd)
-{start_iic(oled_32_128_adr, WRITE);
-send_byte (0x80);
-send_byte (cmd);
-stop_iic();
+  i2c_wr_reg(oled_32_128_adr, 0x80, &cmd, 1);
+//  start_iic(oled_32_128_adr, WRITE);
+//  send_byte (0x80);
+//  send_byte (cmd);
+//  stop_iic();
 }
 
-void sendData(char* data, char count)
-{start_iic(oled_32_128_adr,WRITE);
-send_byte (0x40);
-for(int j=0;j<count;j++)
-{
-send_byte (*(data+j));
-}
-stop_iic();
+void sendData(char* data, char count) {
+
+    i2c_wr_reg(oled_32_128_adr, 0x40, data, count);
+//  start_iic(oled_32_128_adr,WRITE);
+//  send_byte (0x40);
+//  for(int j=0;j<count;j++) {
+//    send_byte (*(data+j));
+//  }
+//  stop_iic();
 }
 
 void init_ssd1306_2()
@@ -49,18 +52,12 @@ send_repeat_data(0xff,n);
 
 void send_repeat_data(char data_byte,char n)
 {
-start_iic(oled_32_128_adr, WRITE);
-send_byte (0x40);
-for(int j=1;j<=n;j++) send_byte (data_byte);
-stop_iic();
-}
 
-void send_single_data(char data_byte)
-{
-start_iic(oled_32_128_adr, WRITE);
-send_byte (0xc0);
-send_byte (data_byte);
-stop_iic();
+  for(int j=1;j<=n;j++) i2c_wr_reg(oled_32_128_adr, 0x40, &data_byte, 1);
+//start_iic(oled_32_128_adr, WRITE);
+//send_byte (0x40);
+//for(int j=1;j<=n;j++) send_byte (data_byte);
+//stop_iic();
 }
 
 void set_cursor(char x,char y )
@@ -124,29 +121,23 @@ char oled_print_giga_char(char c,char x)
   return (pos+x);
   }
 
-void oled_print_XXnumber(char n, char pos) {
+void oled_print_XXnumber(int n, char pos) {
   extern OledDigitBuffer oledBuffer;
   for (char i=0; i<DIG_BUF_SIZE; i++) {if (n == oledBuffer.value[i] && pos == oledBuffer.position[i]) return;}
-  
+    
   char bufIndex = 0;
   while(oledBuffer.position[bufIndex] != 255 && oledBuffer.position[bufIndex] != pos)
   {bufIndex++;}
   oledBuffer.position[bufIndex] = pos;
   oledBuffer.value[bufIndex] = n;
-    
+  
+  if (n<0) {oled_print_giga_char('-',pos);pos+=16;n=-n;} 
   if (n >= 10) {oled_print_giga_digit(n/10, pos);}
   else {oled_print_giga_digit(0, pos);}
   pos += 16;
   oled_print_giga_digit(n%10, pos);
 }
 
-void oled_print_XXXnumber(int n, char pos) {
-  if (n<0) {oled_print_giga_char('-',pos);pos+=16;n=-n;}
-  if (n>=100) {oled_print_giga_digit(n/100,pos);n%=100;}
-  else {oled_print_giga_digit(0,pos);}
-  pos+=16;
-  oled_print_XXnumber(n, pos);
-}
 
                        
                        

@@ -1,10 +1,3 @@
-//init value settings 
-#define YEAR_INIT   21
-#define MONTH_INIT  11
-#define DATE_INIT   13
-#define WEEK_INIT   6
-#define HR_INIT  21
-#define MIN_INIT    53
 
 #define SECOND_PER_DAY  86400
 #define SECOND_MOSCOW_ALIGNMENT  (3*3600)
@@ -45,27 +38,58 @@ typedef struct {
 } LocalTime; 
 
 typedef struct {
+  unsigned long epochSec;
+  char sec;
+  
+  unsigned long epochSecToMimute;
+  unsigned int minFromMidnight;
+  
+  unsigned long epochSecToDay;
+  char day;
+  
+  char cacheEneble;
+} SecondsRtcUtcCache;
+
+typedef struct {
+  unsigned int rawDays;
+  LocalDate date;
+} DateFromEpochDaysCache;
+
+typedef struct {
+  unsigned long hoursFromFirst;
+  unsigned long shiftSeconds;
+} AlignmentTimeCache;
+
+typedef struct {
+  unsigned long epochRawSeconds;
+  unsigned long epochSecToDay;
+  char cacheEneble;
+} TimeTransferBodyCache;
+
+typedef struct {
   unsigned long epochSecFirstPoint;
-  long shiftMillis;
-  long correctionMillis;
+  unsigned long shiftSeconds;
+  char timeCorrSec;
+  char positiveCorr;
+  char timeCorrDecaMs;
+  char cachedSeconds;
 } TimeAlignment; 
 
 void delay_rtc(char del );
-void rtc_set_time(void);
+void rtc_set_time(LocalTime time, LocalDate date);
 void init_rtc(void);
 void send_byte_rtc(char data);
 char receive_byte_rtc(void);
 void send_rtc(char reg_adr, char data);
 char receive_rtc(char reg_adr);
 char receive_plain_val_rtc(char reg_adr);
-void print_time(void);
-void print_time_giga(void);
-void init_tim1(void);
-char equals(LocalDate date1, LocalDate date2);
+
 char getMonthLength(char month, char leap);
 char isLeapYear(int year);
 LocalDate getMonth(int days, int year);
-LocalDate getDate(long days);
-unsigned long getDaysOfDate(LocalDate date);
+LocalDate getDateFromEpochDays(unsigned int days);
+unsigned long getEpochDaysOfDate(char year, char month, char day);
 unsigned long getDays(unsigned long seconds);
-unsigned long receive_seconds_rtc_utc();
+unsigned long receiveEpochSecondsRtcMoscow();
+void refreshTimeTransferBody(void);
+unsigned long getActualSeconds(unsigned long epochRawSec);

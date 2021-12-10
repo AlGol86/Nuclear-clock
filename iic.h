@@ -1,7 +1,7 @@
 //this example is intended for 8 MHz clock frequency
 #include "iostm8s103f3.h"
-#define PIN_sda     4   //port B
-#define PIN_clk     5   //port B
+#define PIN_sda     5   //port B
+#define PIN_clk     4   //port B
 
 #define BIT_sda    (1<<PIN_sda)
 #define BIT_clk    (1<<PIN_clk)
